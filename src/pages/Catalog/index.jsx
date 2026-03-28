@@ -174,6 +174,21 @@ export default function Catalog() {
             </motion.div>
           </AnimatePresence>
         </main>
+
+        {/* ===== RIGHT IMAGE COLUMN ===== */}
+        <aside className={styles.imageCol}>
+          {category.image && (
+            <div className={styles.imageColWrap}>
+              <img
+                src={category.image}
+                alt={category.label}
+                className={styles.imageColImg}
+              />
+              <span className={styles.imageColLabel}>{category.label}</span>
+            </div>
+          )}
+        </aside>
+
       </div>
     </PageWrapper>
   )

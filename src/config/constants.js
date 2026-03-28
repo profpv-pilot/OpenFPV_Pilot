@@ -5,12 +5,13 @@
 export const APP_NAME = 'OpenFPV Pilot'
 export const APP_TAGLINE = 'Fly Beyond Limits'
 export const APP_DESCRIPTION =
-  'Premium FPV drone hardware, 3D model viewers, and flight gear for professional pilots.'
+  'A free, open-source learning platform to build, tune, and fly FPV drones — from zero to first freestyle flight.'
 
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'Catalog', path: '/catalog' },
   { label: 'Academy', path: '/training' },
+  { label: 'Builder', path: '/builder' },
   { label: 'About', path: '/about' },
 ]
 

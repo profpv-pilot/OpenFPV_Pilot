@@ -10,6 +10,7 @@ const Catalog = lazy(() => import('@pages/Catalog'))
 const ProductDetail = lazy(() => import('@pages/ProductDetail'))
 const About = lazy(() => import('@pages/About'))
 const Training = lazy(() => import('@pages/Training'))
+const Builder = lazy(() => import('@pages/Builder'))
 
 function PageLoader() {
   return (
@@ -40,6 +41,7 @@ export default function AppRouter() {
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/training" element={<Training />} />
+          <Route path="/builder" element={<Builder />} />
           <Route path="/about" element={<About />} />
           <Route
             path="*"

@@ -5,7 +5,7 @@
 /* ===== LAYOUT ===== */
 .layout {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 240px 1fr 240px;
   gap: 0;
   min-height: calc(100vh - var(--nav-height));
   align-items: start;
@@ -53,7 +53,10 @@
   transition: background var(--transition-fast);
   overflow: hidden;
 }
-.sidebarItem:hover { background: var(--color-bg-card); }
+
+.sidebarItem:hover {
+  background: var(--color-bg-card);
+}
 
 .sidebarActive {
   background: color-mix(in srgb, var(--cat-color, #00d4ff) 8%, transparent) !important;
@@ -68,7 +71,10 @@
   border-radius: var(--radius-full);
 }
 
-.sidebarIcon { font-size: 1.1rem; flex-shrink: 0; }
+.sidebarIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
 
 .sidebarName {
   font-family: var(--font-display);
@@ -78,7 +84,10 @@
   color: var(--color-text-secondary);
   transition: color var(--transition-fast);
 }
-.sidebarActive .sidebarName { color: var(--color-text-primary); }
+
+.sidebarActive .sidebarName {
+  color: var(--color-text-primary);
+}
 
 /* Table of Contents */
 .tocBox {
@@ -106,6 +115,7 @@
   border-left: 2px solid transparent;
   transition: all var(--transition-fast);
 }
+
 .tocLink:hover {
   color: var(--cat-color, var(--color-accent-primary));
   border-left-color: var(--cat-color, var(--color-accent-primary));
@@ -136,7 +146,9 @@
   flex-shrink: 0;
 }
 
-.catIcon { font-size: 2.25rem; }
+.catIcon {
+  font-size: 2.25rem;
+}
 
 .catEyebrow {
   font-family: var(--font-mono);
@@ -195,6 +207,7 @@
   align-items: center;
   gap: var(--space-3);
 }
+
 .sectionTitle::before {
   content: '';
   display: inline-block;
@@ -202,6 +215,53 @@
   height: 1.1em;
   background: var(--sec-color, var(--color-accent-primary));
   border-radius: var(--radius-full);
+}
+
+/* ===== RIGHT IMAGE COLUMN ===== */
+.imageCol {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-6));
+  height: fit-content;
+  padding: var(--space-8) var(--space-4);
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.imageColWrap {
+  width: 100%;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  overflow: hidden;
+}
+
+.imageColImg {
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15));
+  transition: transform 0.45s ease;
+}
+.imageColWrap:hover .imageColImg {
+  transform: scale(1.06);
+}
+
+.imageColLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 /* ===== TYPE CARDS GRID ===== */
@@ -218,9 +278,11 @@
   overflow: hidden;
   transition: border-color var(--transition-base);
 }
+
 .typeCard:hover {
   border-color: color-mix(in srgb, var(--card-color, #00d4ff) 30%, transparent);
 }
+
 .typeCardOpen {
   border-color: color-mix(in srgb, var(--card-color, #00d4ff) 50%, transparent);
 }
@@ -240,7 +302,11 @@
   flex: 1;
 }
 
-.typeCardIcon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+.typeCardIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 
 .typeCardNameRow {
   display: flex;
@@ -288,12 +354,15 @@
   align-items: center;
   justify-content: center;
 }
+
 .typeCardToggle:hover {
   border-color: var(--card-color, var(--color-accent-primary));
   color: var(--card-color, var(--color-accent-primary));
 }
 
-.typeCardBody { overflow: hidden; }
+.typeCardBody {
+  overflow: hidden;
+}
 
 .typeCardBodyInner {
   display: grid;
@@ -336,7 +405,6 @@
 }
 
 /* ===== EXPLAINER BLOCK + TABLE ===== */
-.explainerBlock {}
 
 .explainerText {
   font-size: var(--text-base);
@@ -383,8 +451,14 @@
   line-height: 1.5;
 }
 
-.specTable tr:last-child td { border-bottom: none; }
-.specTable tbody tr:hover { background: var(--color-bg-card); }
+.specTable tr:last-child td {
+  border-bottom: none;
+}
+
+.specTable tbody tr:hover {
+  background: var(--color-bg-card);
+}
+
 .specTable td:first-child {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
@@ -412,7 +486,10 @@
   transition: border-color var(--transition-fast);
 }
 
-.tipIcon { font-size: 1.25rem; flex-shrink: 0; }
+.tipIcon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
 
 .tipText {
   font-size: var(--text-sm);
@@ -446,22 +523,43 @@
   color: var(--color-text-secondary);
   text-align: left;
 }
+
 .catNavBtn:hover {
   border-color: var(--cat-color, var(--color-border-hover));
   color: var(--color-text-primary);
   box-shadow: 0 0 16px color-mix(in srgb, var(--cat-color, #00d4ff) 10%, transparent);
 }
 
-.catNavArrow { margin-left: auto; opacity: 0.5; }
+.catNavArrow {
+  margin-left: auto;
+  opacity: 0.5;
+}
 
 /* ===== RESPONSIVE ===== */
+@media (max-width: 1280px) {
+  .imageCol {
+    display: none;
+  }
+  .layout {
+    grid-template-columns: 240px 1fr;
+  }
+}
+
 @media (max-width: 1024px) {
-  .layout { grid-template-columns: 200px 1fr; }
-  .main { padding: var(--space-6) var(--space-6) var(--space-12); }
+  .layout {
+    grid-template-columns: 200px 1fr;
+  }
+
+  .main {
+    padding: var(--space-6) var(--space-6) var(--space-12);
+  }
 }
 
 @media (max-width: 768px) {
-  .layout { grid-template-columns: 1fr; }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
   .sidebar {
     position: static;
     min-height: 0;
@@ -469,9 +567,27 @@
     border-bottom: 1px solid var(--color-border);
     padding: var(--space-4) var(--space-4);
   }
-  .sidebarNav { flex-direction: row; flex-wrap: wrap; gap: var(--space-2); }
-  .sidebarItem { width: auto; flex: 0 0 auto; }
-  .tocBox { display: none; }
-  .main { padding: var(--space-5) var(--space-4) var(--space-10); }
-  .typeCardBodyInner { grid-template-columns: 1fr; }
+
+  .sidebarNav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .sidebarItem {
+    width: auto;
+    flex: 0 0 auto;
+  }
+
+  .tocBox {
+    display: none;
+  }
+
+  .main {
+    padding: var(--space-5) var(--space-4) var(--space-10);
+  }
+
+  .typeCardBodyInner {
+    grid-template-columns: 1fr;
+  }
 }

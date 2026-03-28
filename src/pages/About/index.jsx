@@ -8,15 +8,15 @@ import { APP_NAME, APP_DESCRIPTION } from '@config/constants'
 import styles from './About.module.css'
 
 const TEAM = [
-  { name: 'Aiden Flux', role: 'Lead Pilot & Founder', glph: '◎' },
-  { name: 'Maya Cruz', role: 'Hardware Engineer', glph: '◈' },
-  { name: 'Sam Vector', role: 'CX & Community', glph: '✦' },
+  { name: 'Aiden Flux', role: 'Lead Pilot & Curriculum Designer', glph: '◎' },
+  { name: 'Maya Cruz', role: 'Build & Hardware Expert', glph: '◈' },
+  { name: 'Sam Vector', role: 'Community & Open Source', glph: '✦' },
 ]
 
 const VALUES = [
-  { icon: '⚡', title: 'Performance First', desc: 'Every product is tested by professional pilots in real-world conditions.' },
-  { icon: '🔩', title: 'Engineering Depth', desc: 'We go deep on specs so you can make the right build decisions.' },
-  { icon: '🌍', title: 'Community Driven', desc: 'Our catalog is shaped by feedback from 12,000+ pilots worldwide.' },
+  { icon: '📖', title: 'Learn by Building', desc: 'Every lesson is hands-on — you build a real drone, not a simulation.' },
+  { icon: '🔩', title: 'Zero to First Flight', desc: 'From soldering iron to freestyle — structured day-by-day programs for all levels.' },
+  { icon: '🌍', title: 'Fully Open Source', desc: 'No paywalls, no subscriptions. Every guide, schematic, and resource is free forever.' },
 ]
 
 export default function About() {

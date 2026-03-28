@@ -54,7 +54,7 @@ export default function Navbar() {
         {/* CTA + Theme Toggle + Hamburger */}
         <div className={styles.actions}>
           <Link to="/catalog" className={styles.ctaBtn}>
-            Shop Now
+            Learn Today
           </Link>
           {/* Theme Toggle */}
           <motion.button
@@ -113,7 +113,7 @@ export default function Navbar() {
               </NavLink>
             ))}
             <Link to="/catalog" className={styles.mobileCta}>
-              Shop Now →
+              Learn Today →
             </Link>
             <button className={styles.mobileThemeToggle} onClick={toggleTheme}>
               {theme === 'dark' ? '☀ Light Mode' : '🌙 Dark Mode'}

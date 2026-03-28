@@ -9,6 +9,7 @@ export const PART_CATEGORIES = [
     label: 'Motors',
     icon: '⚙️',
     color: '#00d4ff',
+    image: '/images/Motor.png',
     tagline: 'The muscles of your drone',
     intro:
       'A motor converts electrical energy into rotational force (torque) that spins the propellers to generate lift. Understanding motors is fundamental to building and tuning any FPV drone.',
@@ -19,6 +20,7 @@ export const PART_CATEGORIES = [
         items: [
           {
             name: 'Brushed Motor',
+            image: '/images/Motor.png',
             badge: 'Legacy',
             badgeColor: '#f59e0b',
             icon: '🔧',
@@ -105,6 +107,7 @@ export const PART_CATEGORIES = [
       {
         title: 'Frame Geometry Types',
         type: 'cards',
+        image: '/images/Frame.png',
         items: [
           {
             name: 'True-X',

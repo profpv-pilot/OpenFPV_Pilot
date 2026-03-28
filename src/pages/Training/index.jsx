@@ -9,10 +9,10 @@ import { COURSES } from '@data/training'
 import styles from './Training.module.css'
 
 export default function Training() {
-  const [activeCourse, setActiveCourse] = useState(COURSES[0].id)
+  const [activeCourse, setActiveCourse] = useState(COURSES[0]?.id || '')
   const [openDay, setOpenDay] = useState(null)
 
-  const course = COURSES.find((c) => c.id === activeCourse)
+  const course = COURSES.find((c) => c.id === activeCourse) || null
 
   return (
     <PageWrapper>
@@ -63,9 +63,11 @@ export default function Training() {
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.35 }}
             >
-              {/* ===== COURSE OVERVIEW ===== */}
-              <div className={styles.overview}>
-                <div className={styles.overviewLeft}>
+              {course && (
+                <>
+                  {/* ===== COURSE OVERVIEW ===== */}
+                  <div className={styles.overview}>
+                    <div className={styles.overviewLeft}>
                   <span className={styles.overviewIcon}>{course.icon}</span>
                   <div>
                     <h2 className={styles.courseTitle}>{course.title}</h2>
@@ -108,7 +110,8 @@ export default function Training() {
                   />
                 ))}
               </div>
-
+                </>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -128,11 +131,11 @@ export default function Training() {
                 Ready to Start <span className="gradient-text">Your Journey?</span>
               </h2>
               <p className={styles.ctaSub}>
-                Get the gear, follow the program, and join 12,000+ pilots who started exactly where you are now.
+                Follow the program, build your own drone, and fly freestyle — all for free.
               </p>
               <div className={styles.ctaBtns}>
-                <a href="/catalog" className={styles.primaryBtn}>Shop Build Kits</a>
-                <a href="/about" className={styles.ghostBtn}>Meet the Instructors →</a>
+                <a href="/catalog" className={styles.primaryBtn}>Explore the Catalog</a>
+                <a href="/about" className={styles.ghostBtn}>About This Project →</a>
               </div>
             </motion.div>
           </div>
@@ -238,3 +241,5 @@ function DayCard({ day, index, isOpen, onToggle, color }) {
     </motion.div>
   )
 }
+
+
