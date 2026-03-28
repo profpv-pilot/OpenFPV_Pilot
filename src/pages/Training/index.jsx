@@ -116,30 +116,7 @@ export default function Training() {
           </AnimatePresence>
         </div>
 
-        {/* ========= CTA ========= */}
-        <section className={`section ${styles.ctaSection}`}>
-          <div className="container">
-            <motion.div
-              className={styles.ctaBox}
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className={styles.ctaIcon}>🚀</span>
-              <h2 className={styles.ctaTitle}>
-                Ready to Start <span className="gradient-text">Your Journey?</span>
-              </h2>
-              <p className={styles.ctaSub}>
-                Follow the program, build your own drone, and fly freestyle — all for free.
-              </p>
-              <div className={styles.ctaBtns}>
-                <a href="/catalog" className={styles.primaryBtn}>Explore the Catalog</a>
-                <a href="/about" className={styles.ghostBtn}>About This Project →</a>
-              </div>
-            </motion.div>
-          </div>
-        </section>
+
 
       </div>
     </PageWrapper>

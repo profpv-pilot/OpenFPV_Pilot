@@ -70,7 +70,9 @@
 /* === TEAM === */
 .teamGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
+  max-width: 700px;
+  margin: 0 auto;
   gap: var(--space-6);
 }
 
@@ -115,6 +117,7 @@
 .memberRole {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
+  line-height: 1.6;
 }
 
 @media (max-width: 900px) {

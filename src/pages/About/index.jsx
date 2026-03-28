@@ -8,9 +8,11 @@ import { APP_NAME, APP_DESCRIPTION } from '@config/constants'
 import styles from './About.module.css'
 
 const TEAM = [
-  { name: 'Aiden Flux', role: 'Lead Pilot & Curriculum Designer', glph: '◎' },
-  { name: 'Maya Cruz', role: 'Build & Hardware Expert', glph: '◈' },
-  { name: 'Sam Vector', role: 'Community & Open Source', glph: '✦' },
+  { 
+    name: 'Yogesh Joga', 
+    role: 'Founder of OpenFPV-Pilot • AI Architect • Full Stack Web Developer • IIoT Industrial Digital Twin • Mechanical Engineer • Drone & FPV Researcher • Quantum Computers Researcher • Corporate Software Trainer', 
+    glph: '✦' 
+  }
 ]
 
 const VALUES = [

@@ -89,29 +89,31 @@ const PRESETS = {
   }
 }
 
+const DEFAULT_CONFIG = {
+  preset: null,
+  frameBrand: 'SpeedyBee',
+  frameModel: 'Master 5 V2',
+  frameSize: '5 inch',
+  videoSystemType: 'Analog',
+  vtxBrand: 'TBS',
+  vtxModel: 'Unify Pro32 HV',
+  goggleBrand: 'FatShark',
+  goggleModel: 'HDO+ (HDO Plus)',
+  motorBrand: 'XING',
+  motorSpeed: '1800KV',
+  propSize: '5.1 inch',
+  propMaterial: 'Polycarbonate',
+  stackSize: '30.5x30.5mm',
+  batteryCell: '6S',
+  radioProtocol: 'ExpressLRS (ELRS) 2.4GHz',
+  rangeBooster: 'None'
+}
+
 export default function Builder() {
   const [activeStep, setActiveStep] = useState(0)
 
   // Builder State
-  const [config, setConfig] = useState({
-    preset: null,
-    frameBrand: 'SpeedyBee',
-    frameModel: 'Master 5 V2',
-    frameSize: '5 inch',
-    videoSystemType: 'Analog',
-    vtxBrand: 'TBS',
-    vtxModel: 'Unify Pro32 HV',
-    goggleBrand: 'FatShark',
-    goggleModel: 'HDO+ (HDO Plus)',
-    motorBrand: 'XING',
-    motorSpeed: '1800KV',
-    propSize: '5.1 inch',
-    propMaterial: 'Polycarbonate',
-    stackSize: '30.5x30.5mm',
-    batteryCell: '6S',
-    radioProtocol: 'ExpressLRS (ELRS) 2.4GHz',
-    rangeBooster: 'None'
-  })
+  const [config, setConfig] = useState(DEFAULT_CONFIG)
 
   const handleSelect = (key, val) => {
     setConfig((prev) => {
@@ -317,13 +319,23 @@ export default function Builder() {
             >
               ← Back
             </button>
-            <button
-              className={styles.primaryBtn}
-              disabled={activeStep === steps.length - 1}
-              onClick={() => setActiveStep((prev) => Math.min(steps.length - 1, prev + 1))}
-            >
-              Next Step →
-            </button>
+            {activeStep === steps.length - 1 ? (
+              <button
+                className={styles.primaryBtn}
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                style={{ background: 'var(--gradient-accent)', border: 'none' }}
+              >
+                {isExporting ? 'Generating PDF...' : '⬇ Download PDF'}
+              </button>
+            ) : (
+              <button
+                className={styles.primaryBtn}
+                onClick={() => setActiveStep((prev) => Math.min(steps.length - 1, prev + 1))}
+              >
+                Next Step →
+              </button>
+            )}
           </div>
         </div>
 
@@ -361,7 +373,17 @@ export default function Builder() {
               onClick={handleExportPDF}
               disabled={isExporting}
             >
-              {isExporting ? 'Generating PDF...' : '⬇ Export to PDF'}
+              {isExporting ? 'Generating PDF...' : '⬇ Download PDF'}
+            </button>
+            <button
+              className={styles.ghostBtn}
+              onClick={() => {
+                setConfig(DEFAULT_CONFIG)
+                setActiveStep(0)
+              }}
+              style={{ width: '100%', marginTop: '0.5rem', padding: '0.75rem', fontSize: '0.85rem' }}
+            >
+              ⟲ Reset Builder
             </button>
           </div>
         </aside>

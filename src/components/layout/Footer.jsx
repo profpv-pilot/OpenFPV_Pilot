@@ -52,7 +52,6 @@ export default function Footer() {
       <div className={styles.bottom}>
         <div className="container">
           <p>© {year} {APP_NAME}. All rights reserved.</p>
-          <p>Built with React + Three.js</p>
         </div>
       </div>
     </footer>
