@@ -11,7 +11,7 @@ export const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'Catalog', path: '/catalog' },
   { label: 'Academy', path: '/training' },
-  { label: 'Builder', path: '/builder' },
+  { label: 'FPV Quote', path: '/builder' },
   { label: 'About', path: '/about' },
 ]
 

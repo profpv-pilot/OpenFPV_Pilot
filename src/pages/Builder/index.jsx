@@ -4,43 +4,88 @@
 
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 import PageWrapper from '@components/layout/PageWrapper'
 import styles from './Builder.module.css'
+import { getQuoteDetails, getThrustEstimate } from '../../lib/quoteLogic'
+import { exportQuoteToPDF } from '../../lib/pdfGenerator'
+import database from '../../data/fpvDatabase.json'
+
+const VIDEO_SYSTEMS = {
+  Analog: {
+    vtxBrands: ['Eachine', 'TBS', 'Rush', 'SpeedyBee', 'Caddx', 'RunCam'],
+    vtxModels: {
+      'Eachine': ['TX805'],
+      'TBS': ['Unify Pro32 HV'],
+      'Rush': ['Tank Ultimate Plus'],
+      'SpeedyBee': ['VTX'],
+      'Caddx': ['VTX'],
+      'RunCam': ['TX200U']
+    },
+    goggleBrands: ['FatShark', 'Eachine', 'Skyzone', 'BetaFPV', 'Orqa'],
+    goggleModels: {
+      'FatShark': ['Dominator (HD)', 'HDO+ (HDO Plus)', 'ECHO', 'Recon HD'],
+      'Eachine': ['EV800D', 'EV100', 'EV300D'],
+      'Skyzone': ['SKY04X Pro', 'SKY04O Pro', 'Cobra X', 'Cobra SD'],
+      'BetaFPV': ['VR02', 'VR03'],
+      'Orqa': ['FPV.ONE Pilot']
+    }
+  },
+  Digital: {
+    vtxBrands: ['DJI', 'Walksnail', 'HDZero'],
+    vtxModels: {
+      'DJI': ['DJI Air Unit', 'DJI O3 Air Unit', 'Caddx Vista', 'Caddx Vista Polar'],
+      'Walksnail': ['Avatar HD VTX V1', 'Avatar HD VTX V2'],
+      'HDZero': ['HDZero VTX V1', 'HDZero Freestyle V2']
+    },
+    goggleBrands: {
+      'DJI': ['DJI'],
+      'Walksnail': ['Walksnail'],
+      'HDZero': ['HDZero']
+    },
+    goggleModels: {
+      'DJI': ['DJI FPV Goggles V2', 'DJI Goggles 2', 'DJI Goggles 3', 'DJI Goggles Integra'],
+      'Walksnail': ['Avatar HD Goggles', 'Avatar HD Goggles X', 'Avatar HD Goggles L'],
+      'HDZero': ['HDZero Goggle V2', 'HDZero Goggle']
+    }
+  }
+}
 
 const PRESETS = {
   cinewhoop: {
+    frameBrand: 'SpeedyBee',
+    frameModel: 'Bee25 Wireless Tuning',
     frameSize: '2.5 inch',
-    frameType: 'Cinewhoop (Ducted)',
-    frameMaterial: 'Injection Molded Plastic',
-    cameraType: 'Walksnail Avatar HD',
-    cameraBrand: 'Caddx',
+    videoSystemType: 'Digital',
+    vtxBrand: 'Walksnail',
+    vtxModel: 'Avatar HD VTX V2',
+    goggleBrand: 'Walksnail',
+    goggleModel: 'Avatar HD Goggles X',
     motorBrand: 'EMAX',
     motorSpeed: '14000KV',
     propSize: '2.5 inch',
     propMaterial: 'Polycarbonate',
-    stackSize: '25.5x25.5mm (AIO)',
+    stackSize: '16x16mm (Whoop)',
     batteryCell: '4S',
     radioProtocol: 'ExpressLRS (ELRS) 2.4GHz',
-    rangeBooster: 'None',
-    goggles: 'Walksnail Avatar Goggles X'
+    rangeBooster: 'None'
   },
   freestyle: {
+    frameBrand: 'iFlight',
+    frameModel: 'Nazgul Evoque F5 V3',
     frameSize: '5 inch',
-    frameType: 'Freestyle X',
-    frameMaterial: 'Carbon Fiber',
-    cameraType: 'DJI O3 Air Unit',
-    cameraBrand: 'DJI',
+    videoSystemType: 'Digital',
+    vtxBrand: 'DJI',
+    vtxModel: 'DJI O3 Air Unit',
+    goggleBrand: 'DJI',
+    goggleModel: 'DJI Goggles 2',
     motorBrand: 'XING',
     motorSpeed: '1800KV',
     propSize: '5.1 inch',
     propMaterial: 'Polycarbonate',
     stackSize: '30.5x30.5mm',
     batteryCell: '6S',
-    radioProtocol: 'ExpressLRS (ELRS) 868/915MHz',
-    rangeBooster: '1W Micro TX Module',
-    goggles: 'DJI Goggles 2 / Integra'
+    radioProtocol: 'ExpressLRS (ELRS) 900MHz',
+    rangeBooster: '1W Micro TX Module'
   }
 }
 
@@ -50,57 +95,110 @@ export default function Builder() {
   // Builder State
   const [config, setConfig] = useState({
     preset: null,
+    frameBrand: 'SpeedyBee',
+    frameModel: 'Master 5 V2',
     frameSize: '5 inch',
-    frameType: 'Freestyle X',
-    frameMaterial: 'Carbon Fiber',
-    cameraType: 'Analog',
-    cameraBrand: 'Caddx',
+    videoSystemType: 'Analog',
+    vtxBrand: 'TBS',
+    vtxModel: 'Unify Pro32 HV',
+    goggleBrand: 'FatShark',
+    goggleModel: 'HDO+ (HDO Plus)',
     motorBrand: 'XING',
     motorSpeed: '1800KV',
     propSize: '5.1 inch',
     propMaterial: 'Polycarbonate',
-    stackSize: '30x30mm',
+    stackSize: '30.5x30.5mm',
     batteryCell: '6S',
-    radioProtocol: 'ELRS 2.4GHz',
-    rangeBooster: 'None',
-    goggles: 'Analog Diversity',
+    radioProtocol: 'ExpressLRS (ELRS) 2.4GHz',
+    rangeBooster: 'None'
   })
 
   const handleSelect = (key, val) => {
     setConfig((prev) => {
       const next = { ...prev, [key]: val }
-      // Auto-update prop size and stack size based on frame size change
-      if (key === 'frameSize') {
-        next.propSize = val
-        if (val === '1.6 inch' || val === '2 inch' || val === '2.5 inch') {
-          next.stackSize = '16x16mm (Whoop)'
-          next.batteryCell = '2S'
-          next.motorSpeed = '14000KV'
-        } else if (val === '3 inch' || val === '3.5 inch') {
-          next.stackSize = '20x20mm'
-          next.batteryCell = '4S'
-          next.motorSpeed = '4000KV'
-        } else if (val === '5 inch' || val === '5.1 inch') {
-          next.stackSize = '30.5x30.5mm'
-          next.batteryCell = '6S'
-          next.motorSpeed = '1800KV'
-        } else if (val === '7 inch' || val === '10 inch') {
-          next.stackSize = '30.5x30.5mm'
-          next.batteryCell = '6S'
-          next.motorSpeed = '1300KV'
+
+      let selectedModel = next.frameModel;
+
+      if (key === 'frameBrand') {
+        const firstModel = database.find(item => item.Brand === val)
+        selectedModel = firstModel ? firstModel.Model : next.frameModel
+        next.frameModel = selectedModel
+      }
+
+      if (key === 'frameBrand' || key === 'frameModel') {
+        const frameData = database.find(item => item.Model === selectedModel)
+        if (frameData) {
+          let cleanSize = (frameData.Size || '5"').replace('"', ' inch')
+          if (cleanSize.includes('-')) cleanSize = cleanSize.split('-')[0] + ' inch'
+          next.frameSize = cleanSize
+          next.propSize = cleanSize
+
+          if (cleanSize.includes('1.6') || cleanSize.includes('2 ') || cleanSize.includes('2.5')) {
+            next.stackSize = '16x16mm (Whoop)'
+            next.batteryCell = '2S'
+            next.motorSpeed = '14000KV'
+          } else if (cleanSize.includes('3 ') || cleanSize.includes('3.5')) {
+            next.stackSize = '20x20mm'
+            next.batteryCell = '4S'
+            next.motorSpeed = '4000KV'
+          } else if (cleanSize.includes('5 ') || cleanSize.includes('5.1')) {
+            next.stackSize = '30.5x30.5mm'
+            next.batteryCell = '6S'
+            next.motorSpeed = '1800KV'
+          } else if (cleanSize.includes('7 ') || cleanSize.includes('9 ') || cleanSize.includes('10 ') || cleanSize.includes('15 ')) {
+            next.stackSize = '30.5x30.5mm'
+            next.batteryCell = '6S'
+            next.motorSpeed = '1300KV'
+          }
         }
       }
+
+      if (key === 'videoSystemType') {
+        if (val === 'Analog') {
+          next.vtxBrand = 'TBS'
+          next.vtxModel = 'Unify Pro32 HV'
+          next.goggleBrand = 'FatShark'
+          next.goggleModel = 'HDO+ (HDO Plus)'
+        } else {
+          next.vtxBrand = 'DJI'
+          next.vtxModel = 'DJI O3 Air Unit'
+          next.goggleBrand = 'DJI'
+          next.goggleModel = 'DJI Goggles 2'
+        }
+      }
+
+      if (key === 'vtxBrand') {
+        const sys = VIDEO_SYSTEMS[next.videoSystemType]
+        next.vtxModel = sys.vtxModels[val][0]
+        if (next.videoSystemType === 'Digital') {
+          // Force goggle ecosystem binding
+          next.goggleBrand = sys.goggleBrands[val][0]
+          next.goggleModel = sys.goggleModels[sys.goggleBrands[val][0]][0]
+        }
+      }
+
+      if (key === 'goggleBrand') {
+        const sys = VIDEO_SYSTEMS[next.videoSystemType]
+        next.goggleModel = sys.goggleModels[val][0]
+      }
+
       return next
     })
   }
 
+  const sys = VIDEO_SYSTEMS[config.videoSystemType]
+
   // Dynamic Options Definitions
   const OPTIONS = {
-    frameSize: ['1.6 inch', '2 inch', '2.5 inch', '3 inch', '3.5 inch', '5 inch', '5.1 inch', '7 inch', '10 inch', '15 inch'],
-    frameType: ['Freestyle X', 'Deadcat', 'Cinewhoop (Ducted)', 'Racing X', 'Long Range X'],
-    frameMaterial: ['Carbon Fiber', 'Injection Molded Plastic'],
-    cameraType: ['Analog', 'DJI O3 Air Unit', 'Walksnail Avatar HD', 'HDZero'],
-    cameraBrand: ['Caddx', 'RunCam', 'Foxeer', 'DJI'],
+    frameBrand: [...new Set(database.map(item => item.Brand))],
+    frameModel: database.filter(item => item.Brand === config.frameBrand).map(item => item.Model),
+    
+    videoSystemType: ['Analog', 'Digital'],
+    vtxBrand: sys.vtxBrands,
+    vtxModel: sys.vtxModels[config.vtxBrand] || [],
+    goggleBrand: config.videoSystemType === 'Analog' ? sys.goggleBrands : sys.goggleBrands[config.vtxBrand] || [],
+    goggleModel: sys.goggleModels[config.goggleBrand] || [],
+
     motorBrand: ['XING', 'T-Motor', 'RCINPOWER', 'EMAX', 'BrotherHobby'],
     motorSpeed: ['1300KV', '1500KV', '1800KV', '1960KV', '2400KV', '2750KV', '4000KV', '14000KV'],
     propSize: ['1.6 inch', '2 inch', '2.5 inch', '3 inch', '3.5 inch', '5 inch', '5.1 inch', '7 inch', '10 inch'],
@@ -113,64 +211,23 @@ export default function Builder() {
   }
 
   const steps = [
-    { title: 'Frame Base', fields: ['frameSize', 'frameType', 'frameMaterial'] },
+    { title: 'Frame Base', fields: ['frameBrand', 'frameModel'] },
     { title: 'Motors & Props', fields: ['motorBrand', 'motorSpeed', 'propSize', 'propMaterial'] },
-    { title: 'Video System', fields: ['cameraType', 'cameraBrand', 'goggles'] },
+    { title: 'Video System (VTX)', fields: ['videoSystemType', 'vtxBrand', 'vtxModel'] },
+    { title: 'Video System (Goggles)', fields: ['goggleBrand', 'goggleModel'] },
     { title: 'Electronics', fields: ['stackSize', 'batteryCell'] },
     { title: 'Control Link', fields: ['radioProtocol', 'rangeBooster'] },
   ]
 
-  const calculateTotal = () => {
-    let base = 150 // FC+ESC+RadioRX
-    // Add Frame Cost
-    if (config.frameSize.includes('7') || config.frameSize.includes('10')) base += 80
-    else if (config.frameSize.includes('5')) base += 50
-    else base += 35
-    // Add Video Cost
-    if (config.cameraType === 'DJI O3 Air Unit') base += 229
-    else if (config.cameraType === 'Walksnail Avatar HD') base += 140
-    else if (config.cameraType === 'HDZero') base += 120
-    else base += 40
-    // Add Motors Cost
-    base += 80 
-    // Add Battery Target Cost
-    if (config.batteryCell === '6S') base += 35
-    else if (config.batteryCell === '4S') base += 25
-    else base += 10
+  const quoteDetails = getQuoteDetails(config)
+  const thrustEstimate = getThrustEstimate(config.frameSize)
 
-    return base
-  }
-
-  const calculateThrust = () => {
-    if (config.frameSize.includes('10') || config.frameSize.includes('7')) return '~3.5kg - 5kg (Cinematic Lift)'
-    if (config.frameSize.includes('5')) return '~2kg - 3kg (Aggressive Freestyle)'
-    if (config.frameSize.includes('3')) return '~800g (Park Flyer)'
-    return '~150g (Indoor/Micro)'
-  }
-
-  const invoiceRef = useRef(null)
   const [isExporting, setIsExporting] = useState(false)
 
   const handleExportPDF = async () => {
-    if (!invoiceRef.current) return
     setIsExporting(true)
-
     try {
-      const canvas = await html2canvas(invoiceRef.current, { scale: 2, useCORS: true })
-      const imgData = canvas.toDataURL('image/png')
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
-      
-      pdf.addImage(imgData, 'PNG', 0, 10, pdfWidth, pdfHeight)
-      
-      // Watermark
-      pdf.setTextColor(150, 150, 150)
-      pdf.setFontSize(10)
-      pdf.text('Generated by OpenFPV_Pilot — Free Open-Source Learning Platform', 10, pdf.internal.pageSize.getHeight() - 10)
-
-      pdf.save(`OpenFPV_Quote_${config.frameSize.replace(' ', '')}_${config.cameraType.replace(' ', '')}.pdf`)
+      exportQuoteToPDF(config, quoteDetails, thrustEstimate)
     } catch (err) {
       console.error('PDF Export failed', err)
     } finally {
@@ -193,13 +250,13 @@ export default function Builder() {
           <div className={styles.presetSection}>
             <p className={styles.presetTitle}>Quick Start Presets:</p>
             <div className={styles.presetGrid}>
-              <button 
+              <button
                 className={styles.presetBtn}
                 onClick={() => setConfig({ ...PRESETS.cinewhoop, preset: 'cinewhoop' })}
               >
                 🚁 Beginner Cinewhoop (Indoor/Park)
               </button>
-              <button 
+              <button
                 className={styles.presetBtn}
                 onClick={() => setConfig({ ...PRESETS.freestyle, preset: 'freestyle' })}
               >
@@ -235,9 +292,9 @@ export default function Builder() {
                   {steps[activeStep].fields.map((field) => (
                     <div key={field} className={styles.fieldGroup}>
                       <label className={styles.fieldLabel}>{field}</label>
-                      <select 
-                        className={styles.fieldSelect} 
-                        value={config[field]} 
+                      <select
+                        className={styles.fieldSelect}
+                        value={config[field]}
                         onChange={(e) => handleSelect(field, e.target.value)}
                       >
                         <option value={config[field]}>{config[field]}</option>
@@ -253,16 +310,16 @@ export default function Builder() {
           </div>
 
           <div className={styles.navButtons}>
-            <button 
-              className={styles.ghostBtn} 
-              disabled={activeStep === 0} 
+            <button
+              className={styles.ghostBtn}
+              disabled={activeStep === 0}
               onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
             >
               ← Back
             </button>
-            <button 
-              className={styles.primaryBtn} 
-              disabled={activeStep === steps.length - 1} 
+            <button
+              className={styles.primaryBtn}
+              disabled={activeStep === steps.length - 1}
               onClick={() => setActiveStep((prev) => Math.min(steps.length - 1, prev + 1))}
             >
               Next Step →
@@ -272,32 +329,35 @@ export default function Builder() {
 
         {/* RIGHT: Live Invoice / PDF Preview */}
         <aside className={styles.invoicePanel}>
-          <div className={styles.invoiceInner} ref={invoiceRef}>
+          <div className={styles.invoiceInner}>
             <h3 className={styles.invoiceTitle}>Build Specification</h3>
-            
+
             <ul className={styles.invoiceList}>
-              {Object.entries(config)
-                .filter(([k, v]) => k !== 'preset' && v !== null)
-                .map(([key, val]) => (
-                  <li key={key} className={styles.invoiceRow}>
-                    <span className={styles.invoiceKey}>{key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span>
-                    <span className={styles.invoiceVal}>{val}</span>
-                  </li>
+              {quoteDetails.items.map((item) => (
+                <li key={item.id} className={styles.invoiceRow}>
+                  <span className={styles.invoiceKey}>{item.type}</span>
+                  <span className={styles.invoiceVal}>{item.name}</span>
+                </li>
               ))}
             </ul>
 
             <div className={styles.performanceBox}>
               <p className={styles.perfLabel}>Est. Thrust Output</p>
-              <p className={styles.perfVal}>{calculateThrust()}</p>
+              <p className={styles.perfVal}>{thrustEstimate}</p>
             </div>
 
             <div className={styles.invoiceTotal}>
-              <span>Est. Total Cost</span>
-              <span className="gradient-text">${calculateTotal()}</span>
+              <p>Est. Total Cost</p>
+              <div style={{ textAlign: 'right' }}>
+                <p className="gradient-text">${quoteDetails.grandTotal.toFixed(2)}</p>
+                <p style={{ fontSize: '1rem', color: 'var(--color-text-secondary)', marginTop: '0.25rem', fontFamily: 'var(--font-mono)' }}>
+                  ≈ ₹{Math.round(quoteDetails.grandTotalINR).toLocaleString('en-IN')}
+                </p>
+              </div>
             </div>
 
-            <button 
-              className={styles.exportBtn} 
+            <button
+              className={styles.exportBtn}
               onClick={handleExportPDF}
               disabled={isExporting}
             >

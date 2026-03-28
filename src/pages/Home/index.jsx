@@ -116,15 +116,35 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className={styles.bannerTitle}>
-              Ready to <span className="gradient-text">Take Flight?</span>
-            </h2>
-            <p className={styles.bannerSub}>
-              Start your FPV journey today — build, tune, and fly your first freestyle drone for free.
-            </p>
-            <Link to="/training" className={styles.primaryBtn}>
-              Start Learning →
-            </Link>
+            <div className={styles.bannerContent}>
+              <h2 className={styles.bannerTitle}>
+                Ready to <span className="gradient-text">Take Flight?</span>
+              </h2>
+              <p className={styles.bannerSub}>
+                Start your FPV journey today — build, tune, and fly your first freestyle drone for free. Master the basics before taking to the real skies.
+              </p>
+              <Link to="/builder" className={styles.primaryBtn}>
+                Quote Your First Build →
+              </Link>
+            </div>
+            
+            <div className={styles.banner3D}>
+              <div className={styles.sketchfabWrapper}>
+                <iframe 
+                  title="Tiny Whoop FPV drone" 
+                  frameBorder="0" 
+                  allowFullScreen 
+                  mozallowfullscreen="true" 
+                  webkitallowfullscreen="true" 
+                  allow="autoplay; fullscreen; xr-spatial-tracking" 
+                  xr-spatial-tracking="true" 
+                  execution-while-out-of-viewport="true" 
+                  execution-while-not-rendered="true" 
+                  web-share="true" 
+                  src="https://sketchfab.com/models/15dd7ffce5724af0afcc62b00545c401/embed?autostart=1&transparent=1&ui_theme=dark&ui_infos=0&ui_watermark=0&ui_watermark_link=0&ui_hint=0&ui_stop=0&ui_controls=0&ui_inspector=0&ui_help=0&autospin=1"
+                ></iframe>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
