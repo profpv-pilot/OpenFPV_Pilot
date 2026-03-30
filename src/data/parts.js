@@ -99,6 +99,7 @@ export const PART_CATEGORIES = [
     id: 'frames',
     label: 'Frames',
     icon: '🏗️',
+    image: '/images/Frame.png',
     color: '#7c3aed',
     tagline: 'The skeleton of your build',
     intro:
@@ -208,6 +209,7 @@ export const PART_CATEGORIES = [
     id: 'batteries',
     label: 'Batteries',
     icon: '🔋',
+    image: '/images/Battery.png',
     color: '#10b981',
     tagline: 'The power source — choose wisely',
     intro:
@@ -220,6 +222,7 @@ export const PART_CATEGORIES = [
           {
             name: 'LiPo (Lithium Polymer)',
             badge: 'Most Common',
+            image: '/images/Battery.png',
             badgeColor: '#10b981',
             icon: '🔋',
             desc: 'The standard for FPV drones. High discharge rate, great power-to-weight ratio. Needs careful handling — can catch fire if punctured or overcharged.',
@@ -323,6 +326,7 @@ export const PART_CATEGORIES = [
     id: 'esc',
     label: 'ESC',
     icon: '🔌',
+    image: '/images/ESC.png',
     color: '#f59e0b',
     tagline: 'Electronic Speed Controller — the motor driver',
     intro:
@@ -335,6 +339,7 @@ export const PART_CATEGORIES = [
           {
             name: '4-in-1 ESC',
             badge: 'Modern Standard',
+            image: '/images/ESC.png',
             badgeColor: '#10b981',
             icon: '🟩',
             desc: 'All four motor controllers on a single PCB. Saves weight, reduces wiring, and mounts directly below the flight controller in a stack. The standard for 3"–7" builds.',
@@ -386,6 +391,7 @@ export const PART_CATEGORIES = [
     id: 'flight-controller',
     label: 'Flight Controller',
     icon: '🧠',
+    image: '/images/FC.png',
     color: '#ec4899',
     tagline: 'The brain of your drone',
     intro:
@@ -394,6 +400,7 @@ export const PART_CATEGORIES = [
       {
         title: 'FC Processor Classes',
         type: 'cards',
+        image: '/images/FC.png',
         items: [
           { name: 'F4 (STM32F4)', badge: 'Entry', badgeColor: '#f59e0b', icon: '🟡', desc: 'Older but reliable 168MHz processor. Enough for most freestyle builds. Limited UARTs and peripheral counts. Still popular due to cost.', specs: ['168MHz', '3–4 UARTs', 'DSHOT300 max', 'Budget friendly'], use: 'Budget / beginner builds where cost matters.' },
           { name: 'F7 (STM32F7)', badge: 'Standard', badgeColor: '#10b981', icon: '🟢', desc: 'The current mainstream standard at 216MHz. Supports DSHOT600, bidirectional DSHOT, more UARTs, and better peripheral handling.', specs: ['216MHz', '5–6 UARTs', 'DSHOT600', 'Most builds'], use: '5" freestyle and racing — the sweet spot.' },
@@ -432,6 +439,7 @@ export const PART_CATEGORIES = [
     id: 'propellers',
     label: 'Propellers',
     icon: '🌀',
+    image: '/images/propellers.png',
     color: '#06b6d4',
     tagline: 'The interface between motor and air',
     intro:
@@ -440,6 +448,7 @@ export const PART_CATEGORIES = [
       {
         title: 'Propeller Specifications',
         type: 'explainer',
+        image: '/images/propellers.png',
         content:
           'Props are described by two numbers: diameter × pitch. Example: 5148 = 5.1" diameter × 4.8" pitch. Pitch is the distance the prop would travel in one revolution through air.',
         table: {
@@ -479,6 +488,7 @@ export const PART_CATEGORIES = [
     id: 'video-systems',
     label: 'Video Systems',
     icon: '📷',
+    image: '/images/vtx.png',
     color: '#f97316',
     tagline: 'Your eyes in the sky',
     intro:
@@ -487,6 +497,7 @@ export const PART_CATEGORIES = [
       {
         title: 'Analog vs Digital FPV',
         type: 'cards',
+        image: '/images/vtx.png',
         items: [
           {
             name: 'Analog FPV',
@@ -558,6 +569,7 @@ export const PART_CATEGORIES = [
     id: 'radio',
     label: 'Radio Control',
     icon: '📻',
+    image: '/images/controller.png',
     color: '#a855f7',
     tagline: 'How you control the drone',
     intro:
@@ -566,6 +578,7 @@ export const PART_CATEGORIES = [
       {
         title: 'Radio Protocols',
         type: 'explainer',
+        image: '/images/controller.png',
         content:
           'Modern FPV uses digital radio links with much better range and reliability than older analog systems. ExpressLRS has become the dominant open-source protocol.',
         table: {
