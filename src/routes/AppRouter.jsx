@@ -11,6 +11,7 @@ const ProductDetail = lazy(() => import('@pages/ProductDetail'))
 const About = lazy(() => import('@pages/About'))
 const Training = lazy(() => import('@pages/Training'))
 const Builder = lazy(() => import('@pages/Builder'))
+const Physics = lazy(() => import('@pages/Physics'))
 
 function PageLoader() {
   return (
@@ -42,6 +43,7 @@ export default function AppRouter() {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/training" element={<Training />} />
           <Route path="/builder" element={<Builder />} />
+          <Route path="/physics" element={<Physics />} />
           <Route path="/about" element={<About />} />
           <Route
             path="*"
