@@ -3,6 +3,7 @@
 // ================================
 
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import PageWrapper from '@components/layout/PageWrapper'
 import { PHYSICS_SECTIONS } from '@data/physicsData'
 import styles from './Physics.module.css'
@@ -44,27 +45,30 @@ export default function Physics() {
               <div className={styles.grid}>
                 {section.topics.map((topic, tIndex) => (
                   <motion.article
-                    key={topic.title}
+                    key={topic.id}
                     className={styles.card}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-50px' }}
                     transition={{ delay: tIndex * 0.1, duration: 0.5 }}
                   >
-                    <div className={styles.imageWrapper}>
-                      <img 
-                        src={topic.image} 
-                        alt={topic.title} 
-                        className={styles.image}
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                    <div className={styles.cardContent}>
-                      <h3 className={styles.cardTitle}>{topic.title}</h3>
-                      <p className={styles.cardText}>{topic.explanation}</p>
-                    </div>
+                    <Link to={`/physics/${section.id}/${topic.id}`} className={styles.cardLink}>
+                      <div className={styles.imageWrapper}>
+                        <img 
+                          src={topic.image} 
+                          alt={topic.title} 
+                          className={styles.image}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                      <div className={styles.cardContent}>
+                        <h3 className={styles.cardTitle}>{topic.title}</h3>
+                        <p className={styles.cardText}>{topic.explanation}</p>
+                        <span className={styles.readMore}>Read Full Story →</span>
+                      </div>
+                    </Link>
                   </motion.article>
                 ))}
               </div>

@@ -1,0 +1,122 @@
+console.log('Loading express...');
+const express = require('express');
+console.log('Loading dotenv...');
+const dotenv = require('dotenv');
+console.log('Loading cors...');
+const cors = require('cors');
+console.log('Loading connectDB...');
+const connectDB = require('./config/db');
+console.log('Loading Product model...');
+const Product = require('./models/Product');
+console.log('Loading express-session...');
+const session = require('express-session');
+console.log('Loading connect-mongo...');
+const MongoStore = require('connect-mongo');
+console.log('Loading passport...');
+const passport = require('passport');
+console.log('Loading auth middleware...');
+const { protect } = require('./middleware/auth');
+console.log('Loading User model...');
+const User = require('./models/User');
+console.log('Configuring passport...');
+require('./config/passport')(passport);
+
+console.log('Initializing env...');
+dotenv.config();
+console.log('Connecting to DB...');
+connectDB();
+
+const app = express();
+
+app.use(cors({
+  origin: 'http://localhost:1337',
+  credentials: true
+}));
+app.use(express.json());
+
+// Sessions
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'fpv_secret',
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI || 'mongodb://localhost:27017/openfpv_pilot' })
+}));
+
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Auth Routes
+app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/api/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+  res.redirect('http://localhost:1337/shop');
+});
+
+app.get('/api/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
+app.get('/api/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+  res.redirect('http://localhost:1337/shop');
+});
+
+app.get('/api/auth/logout', (req, res) => {
+  req.logout(() => {
+    res.json({ message: 'Logged out successfully' });
+  });
+});
+
+app.get('/api/auth/user', (req, res) => {
+  res.json(req.user || null);
+});
+
+// Cart Persistence Routes
+app.get('/api/cart', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate('cart.productId');
+    res.json(user.cart);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post('/api/cart', protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.cart = req.body.cart; // Expecting an array of { productId, quantity }
+      await user.save();
+      res.json({ message: 'Cart updated' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// API Routes
+app.get('/api/products', async (req, res) => {
+  try {
+    const products = await Product.find({});
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Product not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+});

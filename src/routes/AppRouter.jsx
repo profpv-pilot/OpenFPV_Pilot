@@ -3,7 +3,7 @@
 // ================================
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 
 const Home = lazy(() => import('@pages/Home'))
 const Catalog = lazy(() => import('@pages/Catalog'))
@@ -12,6 +12,16 @@ const About = lazy(() => import('@pages/About'))
 const Training = lazy(() => import('@pages/Training'))
 const Builder = lazy(() => import('@pages/Builder'))
 const Physics = lazy(() => import('@pages/Physics'))
+const PhysicsDetail = lazy(() => import('@pages/PhysicsDetail'))
+const Shop = lazy(() => import('@pages/Shop'))
+const Cart = lazy(() => import('@pages/Cart'))
+const Login = lazy(() => import('@pages/Auth/Login'))
+const Unauthorized = lazy(() => import('@pages/Auth/Unauthorized'))
+const AdminDashboard = lazy(() => import('@pages/Admin/AdminDashboard'))
+
+import ProtectedRoute from '@components/auth/ProtectedRoute'
+import { useAuthStore } from '@store/useAuthStore'
+import { useCartStore } from '@store/useCartStore'
 
 function PageLoader() {
   return (
@@ -28,12 +38,26 @@ function PageLoader() {
         fontSize: '0.875rem',
       }}
     >
-      // Loading…
+      Loading...
     </div>
   )
 }
 
 export default function AppRouter() {
+  const fetchUser = useAuthStore(state => state.fetchUser)
+  const { user } = useAuthStore()
+  const { fetchRemoteCart, syncWithBackend } = useCartStore()
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
+
+  useEffect(() => {
+    if (user) {
+      fetchRemoteCart(true)
+    }
+  }, [user, fetchRemoteCart])
+
   return (
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
@@ -41,9 +65,31 @@ export default function AppRouter() {
           <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/product/:id" element={<ProductDetail />} />
-          <Route path="/training" element={<Training />} />
+          <Route path="/training" element={
+            <ProtectedRoute requiredLevel={2}>
+              <Training />
+            </ProtectedRoute>
+          } />
           <Route path="/builder" element={<Builder />} />
-          <Route path="/physics" element={<Physics />} />
+          <Route path="/physics" element={
+            <ProtectedRoute requiredLevel={3}>
+              <Physics />
+            </ProtectedRoute>
+          } />
+          <Route path="/physics/:sectionId/:topicId" element={
+            <ProtectedRoute requiredLevel={3}>
+              <PhysicsDetail />
+            </ProtectedRoute>
+          } />
+          <Route path="/shop" element={<Shop />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/admin" element={
+            <ProtectedRoute requiredLevel={4}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
           <Route path="/about" element={<About />} />
           <Route
             path="*"
