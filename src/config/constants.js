@@ -10,8 +10,8 @@ export const APP_DESCRIPTION =
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'Catalog', path: '/catalog' },
-  { label: 'Academy', path: '/training', minLevel: 2 },
-  { label: 'Physics', path: '/physics', minLevel: 3 },
+  { label: 'Academy', path: '/training' },
+  { label: 'Physics', path: '/physics' },
   { label: 'FPV Quote', path: '/builder' },
   { label: 'Shop', path: '/shop' },
   { label: 'Cart', path: '/cart' },

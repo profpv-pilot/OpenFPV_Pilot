@@ -7,7 +7,6 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { APP_NAME, NAV_LINKS } from '@config/constants'
 import useUIStore from '@store/useUIStore'
-import { useAuthStore } from '@store/useAuthStore'
 import styles from './Navbar.module.css'
 
 export default function Navbar() {
@@ -15,13 +14,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const { theme, toggleTheme } = useUIStore()
-  const { user, logout, hasAccess } = useAuthStore()
-
-  // Filter nav links based on user RBAC level
-  const visibleLinks = NAV_LINKS.filter(link => {
-    if (!link.minLevel) return true  // No restriction
-    return hasAccess(link.minLevel)   // Check user role level
-  })
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -45,7 +37,7 @@ export default function Navbar() {
 
         {/* Desktop Nav */}
         <nav className={styles.navLinks} aria-label="Main navigation">
-          {visibleLinks.map((link) => (
+          {NAV_LINKS.map((link) => (
             <NavLink
               key={link.path}
               to={link.path}
@@ -57,26 +49,10 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-          {user && user.role === 'admin' && (
-            <NavLink to="/admin" className={`${styles.navLink} ${styles.adminLink}`}>
-              Admin
-            </NavLink>
-          )}
         </nav>
 
-        {/* CTA + Theme Toggle + Hamburger */}
+        {/* Theme Toggle + Hamburger */}
         <div className={styles.actions}>
-          {user ? (
-            <div className={styles.userProfile}>
-              <span className={styles.userName}>{user.name}</span>
-              <button onClick={logout} className={styles.logoutBtn}>Logout</button>
-            </div>
-          ) : (
-            <Link to="/login" className={styles.ctaBtn}>
-              Login
-            </Link>
-          )}
-          {/* Theme Toggle */}
           <motion.button
             className={styles.themeToggle}
             onClick={toggleTheme}
@@ -95,6 +71,7 @@ export default function Navbar() {
               {theme === 'dark' ? '☀' : '🌙'}
             </motion.span>
           </motion.button>
+
           {/* Hamburger */}
           <button
             className={styles.hamburger}
@@ -120,7 +97,7 @@ export default function Navbar() {
             transition={{ duration: 0.2 }}
             aria-label="Mobile navigation"
           >
-            {visibleLinks.map((link) => (
+            {NAV_LINKS.map((link) => (
               <NavLink
                 key={link.path}
                 to={link.path}

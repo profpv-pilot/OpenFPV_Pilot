@@ -48,7 +48,7 @@ export default function ProductCard({ product, index }) {
               className={styles.addToCart}
               onClick={(e) => {
                 e.preventDefault();
-                useCartStore.getState().addToCart(product);
+                useCartStore.getState().addItem(product);
               }}
             >
               Add +

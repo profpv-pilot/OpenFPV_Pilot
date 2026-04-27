@@ -9,7 +9,7 @@ import { useCartStore } from '@store/useCartStore'
 import styles from './Cart.module.css'
 
 export default function Cart() {
-  const { cart, removeFromCart, updateQuantity, getTotalPrice, getCartCount, clearCart } = useCartStore()
+  const { cart, removeItem, updateQuantity, getTotalPrice, getCartCount, clearCart } = useCartStore()
 
   if (cart.length === 0) {
     return (
@@ -64,7 +64,7 @@ export default function Cart() {
                       <p className={styles.itemCategory}>{item.category}</p>
                       <button 
                         className={styles.removeBtn}
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => removeItem(item.id)}
                       >
                         Remove
                       </button>

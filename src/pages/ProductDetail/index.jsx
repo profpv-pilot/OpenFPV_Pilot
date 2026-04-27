@@ -9,7 +9,7 @@ import styles from './ProductDetail.module.css'
 export default function ProductDetail() {
   const { id } = useParams()
   const product = getProductById(id)
-  const addToCart = useCartStore((state) => state.addToCart)
+  const addItem = useCartStore((state) => state.addItem)
 
   const [activeImage, setActiveImage] = useState(0)
 
@@ -112,7 +112,7 @@ export default function ProductDetail() {
 
               <button 
                 className={styles.addCartBtn} 
-                onClick={() => addToCart(product)}
+                onClick={() => addItem(product)}
                 disabled={!inStock}
               >
                 Add to Cart
