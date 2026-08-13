@@ -20,3 +20,23 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Configuration
+
+### Feature Flags
+
+The application includes a feature flag configuration file located at `src/config/features.js`. You can use this file to enable or disable specific features across the platform.
+
+For example, to enable or disable the **Academy** navigation item:
+
+1. Open `src/config/features.js`
+2. Change the `enableAcademyNav` property:
+   - Set to `true` to show the Academy nav item.
+   - Set to `false` to hide it.
+
+```javascript
+export const features = {
+  // Toggle to show/hide the Academy nav item
+  enableAcademyNav: false,
+};
+```

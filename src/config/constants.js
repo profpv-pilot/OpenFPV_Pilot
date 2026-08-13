@@ -7,10 +7,12 @@ export const APP_TAGLINE = 'Fly Beyond Limits'
 export const APP_DESCRIPTION =
   'A free, open-source learning platform to build, tune, and fly FPV drones — from zero to first freestyle flight.'
 
+import { features } from './features'
+
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'Catalog', path: '/catalog' },
-  { label: 'Academy', path: '/training', minLevel: 2 },
+  ...(features.enableAcademyNav ? [{ label: 'Academy', path: '/training', minLevel: 2 }] : []),
   { label: 'Physics', path: '/physics', minLevel: 3 },
   { label: 'FPV Quote', path: '/builder' },
   { label: 'Shop', path: '/shop' },
